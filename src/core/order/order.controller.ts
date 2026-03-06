@@ -1,13 +1,23 @@
-import { Controller, Get, Route, Response, SuccessResponse } from "tsoa";
+import {
+  Controller,
+  Get,
+  Route,
+  Response,
+  SuccessResponse,
+  Post,
+  Body,
+} from "tsoa";
 import { OrderDTO } from "./order.dto";
 import db from "../persistence/database/dbcon";
+import { OrderService } from "./order.service";
 db;
 @Route("order")
 export class OrderController extends Controller {
-  @Response<OrderDTO.Test>(201, "Pedido encontrado", {
-    a: "aaa",
-    b: 1,
-  })
-  @Get("{orderId}")
-  async getOrder() {}
+  private orderService = new OrderService();
+
+  @Response(201, "Pedido criado com sucesso")
+  @Post("")
+  async getOrder(@Body() body: OrderDTO.CreateOrder) {
+    return this.orderService.createOrder(body);
+  }
 }

@@ -7,19 +7,51 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"OrderDTO.Test": {
+			"OrderDTO.CreateItem": {
 				"properties": {
-					"b": {
+					"valorItem": {
 						"type": "number",
 						"format": "double"
 					},
-					"a": {
+					"quantidadeItem": {
+						"type": "number",
+						"format": "double"
+					},
+					"idItem": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"b",
-					"a"
+					"valorItem",
+					"quantidadeItem",
+					"idItem"
+				],
+				"type": "object"
+			},
+			"OrderDTO.CreateOrder": {
+				"properties": {
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderDTO.CreateItem"
+						},
+						"type": "array"
+					},
+					"dataCriacao": {
+						"type": "string"
+					},
+					"valorTotal": {
+						"type": "number",
+						"format": "double"
+					},
+					"numeroPedido": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"items",
+					"dataCriacao",
+					"valorTotal",
+					"numeroPedido"
 				],
 				"type": "object"
 			}
@@ -35,34 +67,29 @@
 		"contact": {}
 	},
 	"paths": {
-		"/order/{orderId}": {
-			"get": {
+		"/order": {
+			"post": {
 				"operationId": "GetOrder",
 				"responses": {
 					"201": {
-						"description": "Pedido encontrado",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OrderDTO.Test"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"a": "aaa",
-											"b": 1
-										}
-									}
-								}
-							}
-						}
+						"description": "Pedido criado com sucesso"
 					},
 					"204": {
 						"description": "No content"
 					}
 				},
 				"security": [],
-				"parameters": []
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderDTO.CreateOrder"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

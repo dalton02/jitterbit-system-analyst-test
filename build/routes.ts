@@ -12,9 +12,14 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-    "OrderDTO.Test": {
+    "OrderDTO.CreateItem": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"b":{"dataType":"double","required":true},"a":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"valorItem":{"dataType":"double","required":true},"quantidadeItem":{"dataType":"double","required":true},"idItem":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderDTO.CreateOrder": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"items":{"dataType":"array","array":{"dataType":"refAlias","ref":"OrderDTO.CreateItem"},"required":true},"dataCriacao":{"dataType":"string","required":true},"valorTotal":{"dataType":"double","required":true},"numeroPedido":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -35,8 +40,9 @@ export function RegisterRoutes(app: Router) {
 
     
         const argsOrderController_getOrder: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"OrderDTO.CreateOrder"},
         };
-        app.get('/order/:orderId',
+        app.post('/order',
             ...(fetchMiddlewares<RequestHandler>(OrderController)),
             ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.getOrder)),
 
