@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon --exec \"npx tsoa routes && npx tsoa spec && ts-node src/server.ts\" --watch src --ext ts", 
+    "dev": "npx nodemon --exec \"npx tsoa routes && npx tsoa spec && ts-node src/server.ts\" --watch src --ext ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "envalid": "^8.1.1",
     "express": "^5.2.1",
     "pg": "^8.20.0",
+    "postgrator": "^8.0.0",
     "reflect-metadata": "^0.2.2",
     "swagger-ui-express": "^5.0.1"
   },

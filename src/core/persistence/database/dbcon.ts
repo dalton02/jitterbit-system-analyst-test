@@ -1,5 +1,7 @@
 import { Pool, PoolClient, QueryResult, QueryConfig } from "pg";
 import { niceEnv } from "../utils/env";
+import Postgrator from "postgrator";
+import path, { dirname } from "node:path";
 
 class DatabaseConnection {
   private pool: Pool;
@@ -12,15 +14,41 @@ class DatabaseConnection {
       database: niceEnv.DATABASE_NAME,
       user: niceEnv.DATABASE_USER,
       password: niceEnv.DATABASE_PASS,
+      ssl: false,
     });
 
-    this.pool.on("connect", () => {
-      console.log("✅ Conectado ao PostgreSQL");
+    this.pool.on("connect", async () => {
+      console.log("Conectado ao banco");
     });
 
     this.pool.on("error", (err) => {
-      console.error("❌ Erro inesperado no pool de conexões:", err);
+      console.error("Erro inesperado no pool de conexões:", err);
     });
+    this.process();
+  }
+
+  private async process() {
+    const migrationsPath = path.resolve(__dirname, "../../../migrations");
+
+    const postgrator = new Postgrator({
+      migrationPattern: path.join(migrationsPath, "*"),
+      driver: "pg",
+      database: niceEnv.DATABASE_NAME,
+      execQuery: (query) => this.pool.query(query),
+    });
+
+    const migrations = await postgrator.migrate();
+
+    if (migrations.length === 0) {
+      console.log("Nenhuma migração pendente");
+    } else {
+      console.log(
+        `${migrations.length} migração(ões) aplicada(s) com sucesso:`,
+      );
+      migrations.forEach((m) => {
+        console.log(`   - ${m.name}`);
+      });
+    }
   }
 
   public static getInstance(): DatabaseConnection {
@@ -65,7 +93,6 @@ class DatabaseConnection {
 
   async close(): Promise<void> {
     await this.pool.end();
-    console.log("🔌 Conexões fechadas");
   }
 }
 

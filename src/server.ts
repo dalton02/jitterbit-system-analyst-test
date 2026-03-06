@@ -1,5 +1,5 @@
 import { app } from "./app";
-import { niceEnv } from "./persistence/utils/env";
+import { niceEnv } from "./core/persistence/utils/env";
 
 const port = niceEnv.PORT || 3000;
 

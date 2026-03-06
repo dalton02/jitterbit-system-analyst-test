@@ -1,0 +1,5 @@
+CREATE TABLE "user"(
+    id VARCHAR(32) PRIMARY KEY,
+    email VARCHAR(200) UNIQUE,
+    password VARCHAR(200)
+)
