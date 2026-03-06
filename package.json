@@ -7,9 +7,12 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "dev": "npx nodemon --exec \"npx tsoa routes && npx tsoa spec && ts-node src/server.ts\" --watch src --ext ts", 
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@scalar/api-reference": "^1.47.0",
+    "dotenv-config": "^0.1.1",
     "envalid": "^8.1.1",
     "express": "^5.2.1",
     "pg": "^8.20.0",
@@ -17,6 +20,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@scalar/express-api-reference": "^0.9.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.3.5",
     "@types/pg": "^8.18.0",

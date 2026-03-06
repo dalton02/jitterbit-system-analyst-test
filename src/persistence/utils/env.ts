@@ -8,5 +8,4 @@ export const niceEnv = cleanEnv(process.env, {
   DATABASE_PORT: num(),
   DATABASE_USER: str(),
   DATABASE_PASS: str(),
-  JWT_SECRET: str(),
 });

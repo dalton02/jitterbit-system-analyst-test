@@ -1,0 +1,74 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"OrderDTO.Test": {
+				"properties": {
+					"b": {
+						"type": "number",
+						"format": "double"
+					},
+					"a": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"b",
+					"a"
+				],
+				"type": "object"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "jitterbit-test",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/order/{orderId}": {
+			"get": {
+				"operationId": "GetOrder",
+				"responses": {
+					"201": {
+						"description": "Pedido encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderDTO.Test"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"a": "aaa",
+											"b": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
