@@ -1,0 +1,33 @@
+FROM node:20-alpine AS builder
+
+
+ENV NODE_ENV build
+
+WORKDIR /app
+
+COPY --chown=node:node  package.json .
+COPY --chown=node:node  package-lock.json .  
+COPY --chown=node:node  tsconfig.json .
+
+RUN npm ci
+
+COPY . .
+
+RUN npm run build
+
+FROM node:20-alpine
+
+ENV NODE_ENV production
+
+WORKDIR /app
+
+COPY --from=builder --chown=node:node /app/build ./build
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/package*.json ./
+COPY --from=builder --chown=node:node /app/.env .env
+
+USER node
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "node build/src/server.js"]

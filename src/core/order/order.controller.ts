@@ -11,15 +11,21 @@ import {
   Delete,
   Put,
   Security,
+  Tags,
 } from "tsoa";
 import { OrderDTO, OrderExample } from "./order.dto";
 import { OrderService } from "./order.service";
 
 @Route("order")
+@Tags("Pedidos")
 @Security("jwt")
 export class OrderController extends Controller {
   private orderService = new OrderService();
 
+  /**
+   *
+   * @summary Criar pedido
+   */
   @SuccessResponse(201, "Pedido criado com sucesso")
   @Response<OrderDTO.Order>(
     201,
@@ -33,6 +39,10 @@ export class OrderController extends Controller {
     return this.orderService.createOrder(body);
   }
 
+  /**
+   *
+   * @summary Listar pedidos
+   */
   @SuccessResponse(200, "Listagem concluida")
   @Response<OrderDTO.ListOrders>(200, "Listagem concluida", OrderExample.List)
   @Get("/list")
@@ -40,6 +50,10 @@ export class OrderController extends Controller {
     return this.orderService.listOrders({ page, limit });
   }
 
+  /**
+   *
+   * @summary Pegar pedido por id
+   */
   @SuccessResponse(200, "Pedido encontrado com sucesso")
   @Response<OrderDTO.Order>(
     200,
@@ -52,6 +66,10 @@ export class OrderController extends Controller {
     return this.orderService.findOrder(orderId);
   }
 
+  /**
+   *
+   * @summary Excluir pedido
+   */
   @SuccessResponse(200, "Pedido deletado")
   @Response(404, "Pedido não encontrado")
   @Delete("/{orderId}")
@@ -59,6 +77,10 @@ export class OrderController extends Controller {
     return this.orderService.deleteOrder(orderId);
   }
 
+  /**
+   *
+   * @summary Editar pedido
+   */
   @SuccessResponse(200, "Pedido editado com sucesso")
   @Response<OrderDTO.Order>(
     200,

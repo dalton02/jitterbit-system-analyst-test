@@ -7,6 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "build":"tsoa spec-and-routes && tsc",
     "dev": "npx nodemon --exec \"npx tsoa routes && npx tsoa spec && ts-node src/server.ts\" --watch src --ext ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
