@@ -12,6 +12,16 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "OrderDTO.Item": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"price":{"dataType":"double","required":true},"quantity":{"dataType":"double","required":true},"productId":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderDTO.Order": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"items":{"dataType":"array","array":{"dataType":"refAlias","ref":"OrderDTO.Item"},"required":true},"creationDate":{"dataType":"string","required":true},"value":{"dataType":"double","required":true},"orderId":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "OrderDTO.CreateItem": {
         "dataType": "refAlias",
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"valorItem":{"dataType":"double","required":true},"quantidadeItem":{"dataType":"double","required":true},"idItem":{"dataType":"string","required":true}},"validators":{}},
@@ -20,6 +30,11 @@ const models: TsoaRoute.Models = {
     "OrderDTO.CreateOrder": {
         "dataType": "refAlias",
         "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"items":{"dataType":"array","array":{"dataType":"refAlias","ref":"OrderDTO.CreateItem"},"required":true},"dataCriacao":{"dataType":"string","required":true},"valorTotal":{"dataType":"double","required":true},"numeroPedido":{"dataType":"string","required":true}},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderDTO.ListOrders": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"total":{"dataType":"double","required":true},"totalPages":{"dataType":"double","required":true},"data":{"dataType":"array","array":{"dataType":"refAlias","ref":"OrderDTO.Order"},"required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -39,10 +54,71 @@ export function RegisterRoutes(app: Router) {
 
 
     
-        const argsOrderController_getOrder: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsOrderController_createOrder: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"OrderDTO.CreateOrder"},
         };
         app.post('/order',
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.createOrder)),
+
+            async function OrderController_createOrder(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_createOrder, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'createOrder',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_listOrders: Record<string, TsoaRoute.ParameterSchema> = {
+                page: {"in":"query","name":"page","required":true,"dataType":"double"},
+                limit: {"in":"query","name":"limit","required":true,"dataType":"double"},
+        };
+        app.get('/order/list',
+            ...(fetchMiddlewares<RequestHandler>(OrderController)),
+            ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.listOrders)),
+
+            async function OrderController_listOrders(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsOrderController_listOrders, request, response });
+
+                const controller = new OrderController();
+
+              await templateService.apiHandler({
+                methodName: 'listOrders',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsOrderController_getOrder: Record<string, TsoaRoute.ParameterSchema> = {
+                orderId: {"in":"path","name":"orderId","required":true,"dataType":"string"},
+        };
+        app.get('/order/:orderId',
             ...(fetchMiddlewares<RequestHandler>(OrderController)),
             ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.getOrder)),
 
@@ -62,7 +138,7 @@ export function RegisterRoutes(app: Router) {
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);

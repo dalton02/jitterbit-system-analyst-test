@@ -7,6 +7,54 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"OrderDTO.Item": {
+				"properties": {
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"quantity": {
+						"type": "number",
+						"format": "double"
+					},
+					"productId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"price",
+					"quantity",
+					"productId"
+				],
+				"type": "object"
+			},
+			"OrderDTO.Order": {
+				"properties": {
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderDTO.Item"
+						},
+						"type": "array"
+					},
+					"creationDate": {
+						"type": "string"
+					},
+					"value": {
+						"type": "number",
+						"format": "double"
+					},
+					"orderId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"items",
+					"creationDate",
+					"value",
+					"orderId"
+				],
+				"type": "object"
+			},
 			"OrderDTO.CreateItem": {
 				"properties": {
 					"valorItem": {
@@ -54,6 +102,30 @@
 					"numeroPedido"
 				],
 				"type": "object"
+			},
+			"OrderDTO.ListOrders": {
+				"properties": {
+					"total": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalPages": {
+						"type": "number",
+						"format": "double"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/OrderDTO.Order"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"total",
+					"totalPages",
+					"data"
+				],
+				"type": "object"
 			}
 		},
 		"securitySchemes": {}
@@ -69,13 +141,20 @@
 	"paths": {
 		"/order": {
 			"post": {
-				"operationId": "GetOrder",
+				"operationId": "CreateOrder",
 				"responses": {
 					"201": {
-						"description": "Pedido criado com sucesso"
+						"description": "Pedido criado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderDTO.Order"
+								}
+							}
+						}
 					},
-					"204": {
-						"description": "No content"
+					"409": {
+						"description": "Um ou mais identificadores de item já existe no banco"
 					}
 				},
 				"security": [],
@@ -90,6 +169,75 @@
 						}
 					}
 				}
+			}
+		},
+		"/order/list": {
+			"get": {
+				"operationId": "ListOrders",
+				"responses": {
+					"200": {
+						"description": "Listagem concluida",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderDTO.ListOrders"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/order/{orderId}": {
+			"get": {
+				"operationId": "GetOrder",
+				"responses": {
+					"200": {
+						"description": "Pedido encontrado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderDTO.Order"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Pedido não encontrado"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},

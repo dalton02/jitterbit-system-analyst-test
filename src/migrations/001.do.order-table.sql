@@ -1,6 +1,6 @@
 
 CREATE TABLE "order" (
-    orderId SERIAL PRIMARY KEY,
+    orderId VARCHAR(50) PRIMARY KEY,
     value INT NOT NULL,
     creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

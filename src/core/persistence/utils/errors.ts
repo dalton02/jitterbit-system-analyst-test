@@ -1,4 +1,7 @@
-export class NotFoundError extends Error {
+export class HttpError extends Error {
+  status: number = 500;
+}
+export class NotFoundError extends HttpError {
   status = 404;
   constructor(message = "Resource not found") {
     super(message);
@@ -6,7 +9,7 @@ export class NotFoundError extends Error {
   }
 }
 
-export class BadRequestError extends Error {
+export class BadRequestError extends HttpError {
   status = 400;
   constructor(message: string) {
     super(message);
@@ -14,7 +17,7 @@ export class BadRequestError extends Error {
   }
 }
 
-export class ConflictError extends Error {
+export class ConflictError extends HttpError {
   status = 409;
   constructor(message: string) {
     super(message);
@@ -22,7 +25,7 @@ export class ConflictError extends Error {
   }
 }
 
-export class UnauthorizedError extends Error {
+export class UnauthorizedError extends HttpError {
   status = 401;
   constructor(message = "Unauthorized") {
     super(message);
