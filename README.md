@@ -57,3 +57,10 @@ npm  run  dev
 ```
 http://localhost:3000/docs
 ```
+
+## Funcionalidades
+
+- Autenticação JWT
+- Criação,listagem,edição e exclusão de pedidos
+
+Para acessar os endpoints é importante fazer a autenticação e inserir o token no header Authorization disponibilizado no Scalar UI
