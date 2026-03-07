@@ -1,11 +1,13 @@
 export namespace OrderDTO {
   export type CreateItem = {
+    /** @minLength 1 */
     idItem: string;
     quantidadeItem: number;
     valorItem: number;
   };
 
   export type CreateOrder = {
+    /** @minLength 1 */
     numeroPedido: string;
     valorTotal: number;
     dataCriacao: string;

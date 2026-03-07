@@ -8,6 +8,7 @@ import { RegisterRoutes } from "../build/routes";
 import * as swaggerDocument from "../build/swagger.json";
 import { apiReference } from "@scalar/express-api-reference";
 import { HttpError } from "./core/persistence/utils/errors";
+import { ValidateError } from "tsoa";
 export const app = express();
 
 app.use(json());
@@ -49,6 +50,15 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     return res.status(err.status).json({
       statusCode: err.status,
       message: err.message,
+      data: null,
+    });
+  }
+
+  if (err instanceof ValidateError) {
+    return res.status(404).json({
+      statusCode: 404,
+      message: "Body da request invalido",
+      fields: err.fields,
       data: null,
     });
   }

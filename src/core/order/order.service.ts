@@ -1,3 +1,4 @@
+import { isValid, parseISO } from "date-fns";
 import db from "../persistence/database/dbcon";
 import {
   BadRequestError,
@@ -8,7 +9,24 @@ import { OrderDTO } from "./order.dto";
 import { OrderRepository } from "./order.repository";
 
 export class OrderService {
+  private validateDate(date: string) {
+    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
+
+    if (!isoRegex.test(date)) {
+      throw new BadRequestError(
+        "Data de criação deve ser um timestamp ISO válido",
+      );
+    }
+
+    const d = new Date(date);
+
+    if (Number.isNaN(d.getTime())) {
+      throw new BadRequestError("Data de criação deve ser uma data válida");
+    }
+  }
+
   async createOrder(body: OrderDTO.CreateOrder) {
+    this.validateDate(body.dataCriacao);
     const orderRepository = new OrderRepository();
     const existingOrder = await orderRepository.findOrderById(
       body.numeroPedido,
@@ -52,6 +70,8 @@ export class OrderService {
 
   async updateOrder(params: { body: OrderDTO.UpdateOrder; id: string }) {
     const { body, id } = params;
+
+    this.validateDate(body.dataCriacao);
 
     const orderRepository = new OrderRepository();
     const existingOrder = await orderRepository.findOrderById(id);

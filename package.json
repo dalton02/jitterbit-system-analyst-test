@@ -13,6 +13,7 @@
   "dependencies": {
     "@nestjs/mapped-types": "^2.1.0",
     "@scalar/api-reference": "^1.47.0",
+    "date-fns": "^4.1.0",
     "dotenv-config": "^0.1.1",
     "envalid": "^8.1.1",
     "express": "^5.2.1",
