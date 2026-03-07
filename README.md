@@ -6,7 +6,25 @@
 
 ## 1. Executar com Docker
 
-1. Rode o comando:
+1. Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+
+```
+PORT=3000
+
+DATABASE_HOST=localhost
+
+DATABASE_NAME=nomedobanco
+
+DATABASE_PASS=suasenha
+
+DATABASE_PORT=5432
+
+DATABASE_USER=usuariodobanco
+
+JWT_SECRET=suasenha
+```
+
+2. Rode o comando:
 
 ```bash
 docker  compose  up
