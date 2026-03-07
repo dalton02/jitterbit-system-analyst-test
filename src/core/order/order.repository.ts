@@ -5,15 +5,15 @@ export class OrderRepository extends Repository {
   async findOrderById(id: string): Promise<OrderDTO.Order | null> {
     const result = await this.query(
       `SELECT 
-        o.orderId,
+        o."orderId",
         o.value,
-        o.creationDate,
+        o."creationDate",
         item.quantity,
         item.price,
-        item.productId
+        item."productId"
       FROM "order" o
-      LEFT JOIN item ON item.orderId = o.orderId
-      WHERE o.orderId = $1`,
+      LEFT JOIN item ON item."orderId" = o."orderId"
+      WHERE o."orderId" = $1`,
       [id],
     );
 
@@ -26,16 +26,16 @@ export class OrderRepository extends Repository {
     const first = rows[0];
 
     const order: OrderDTO.Order = {
-      orderId: first.orderid,
+      orderId: first.orderId,
       value: first.value,
-      creationDate: first.creationdate,
+      creationDate: first.creationDate,
       items: [],
     };
 
     for (const row of rows) {
-      if (row.productid) {
+      if (row.productId) {
         order.items.push({
-          productId: row.productid,
+          productId: row.productId,
           quantity: row.quantity,
           price: row.price,
         });
@@ -50,9 +50,9 @@ export class OrderRepository extends Repository {
       `SELECT 
         item.quantity,
         item.price,
-        item.productId
+        item."productId"
       FROM "item"  
-      WHERE productId  = ANY($1)`,
+      WHERE "productId"  = ANY($1)`,
       [ids],
     );
 
@@ -81,15 +81,15 @@ export class OrderRepository extends Repository {
 
     const result = await this.query(
       `SELECT 
-        o.orderId,
+        o."orderId",
         o.value,
-        o.creationDate,
+        o."creationDate",
         item.quantity,
         item.price,
-        item.productId
+        item."productId"
       FROM "order" o
-      LEFT JOIN item ON item.orderId = o.orderId
-      ORDER BY o.creationDate DESC
+      LEFT JOIN item ON item."orderId" = o."orderId"
+      ORDER BY o."creationDate" DESC
       LIMIT $1 OFFSET $2`,
       [limit, offset],
     );
@@ -99,18 +99,18 @@ export class OrderRepository extends Repository {
     const ordersMap = new Map<string, OrderDTO.Order>();
 
     for (const row of rows) {
-      if (!ordersMap.has(row.orderid)) {
-        ordersMap.set(row.orderid, {
-          orderId: row.orderid,
+      if (!ordersMap.has(row.orderId)) {
+        ordersMap.set(row.orderId, {
+          orderId: row.orderId,
           value: row.value,
-          creationDate: row.creationdate,
+          creationDate: row.creationDate,
           items: [],
         });
       }
 
-      if (row.productid) {
-        ordersMap.get(row.orderid)!.items.push({
-          productId: row.productid,
+      if (row.productId) {
+        ordersMap.get(row.orderId)!.items.push({
+          productId: row.productId,
           quantity: row.quantity,
           price: row.price,
         });
@@ -130,10 +130,11 @@ export class OrderRepository extends Repository {
     creationDate: Date;
   }) {
     await this.query(
-      `INSERT INTO "order" (orderId,value,creationDate) VALUES ($1,$2,$3)`,
+      `INSERT INTO "order" ("orderId",value,"creationDate") VALUES ($1,$2,$3)`,
       [data.orderId, data.value, data.creationDate],
     );
   }
+
   async createItem(data: {
     orderId: string;
     productId: string;
@@ -141,8 +142,37 @@ export class OrderRepository extends Repository {
     price: number;
   }) {
     await this.query(
-      `INSERT INTO "item"(orderId,productId,quantity,price) VALUES ($1,$2,$3,$4)`,
+      `INSERT INTO "item"("orderId","productId",quantity,price) VALUES ($1,$2,$3,$4)`,
       [data.orderId, data.productId, data.quantity, data.price],
     );
+  }
+
+  async updateOrder(data: {
+    orderId: string;
+    value: number;
+    creationDate: Date;
+  }) {
+    await this.query(
+      `UPDATE "order" SET value = $1, "creationDate" = $2 WHERE "orderId" = $3`,
+      [data.value, data.creationDate, data.orderId],
+    );
+  }
+
+  async updateItem(data: {
+    productId: string;
+    quantity: number;
+    price: number;
+  }) {
+    await this.query(
+      `UPDATE "item" SET quantity = $1, price = $2 WHERE "productId" = $3`,
+      [data.quantity, data.price, data.productId],
+    );
+  }
+
+  async deleteOrder(id: string) {
+    await this.query(`DELETE FROM "order" WHERE "orderId" = $1`, [id]);
+  }
+  async deleteItem(id: string) {
+    await this.query(`DELETE FROM "item" WHERE "productId" = $1`, [id]);
   }
 }

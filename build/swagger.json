@@ -126,6 +126,29 @@
 					"data"
 				],
 				"type": "object"
+			},
+			"OrderDTO.UpdateOrder": {
+				"properties": {
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/OrderDTO.CreateItem"
+						},
+						"type": "array"
+					},
+					"dataCriacao": {
+						"type": "string"
+					},
+					"valorTotal": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"items",
+					"dataCriacao",
+					"valorTotal"
+				],
+				"type": "object"
 			}
 		},
 		"securitySchemes": {}
@@ -238,6 +261,75 @@
 						}
 					}
 				]
+			},
+			"delete": {
+				"operationId": "DeleteOrder",
+				"responses": {
+					"200": {
+						"description": "Pedido deletado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {},
+									"type": "object"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Pedido não encontrado"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateOrder",
+				"responses": {
+					"200": {
+						"description": "Pedido editado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OrderDTO.Order"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Pedido não encontrado"
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OrderDTO.UpdateOrder"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

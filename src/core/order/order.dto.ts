@@ -12,6 +12,12 @@ export namespace OrderDTO {
     items: CreateItem[];
   };
 
+  export type UpdateOrder = {
+    valorTotal: number;
+    dataCriacao: string;
+    items: CreateItem[];
+  };
+
   export type Item = {
     productId: string;
     quantity: number;

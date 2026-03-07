@@ -8,6 +8,8 @@ import {
   Path,
   SuccessResponse,
   Query,
+  Delete,
+  Put,
 } from "tsoa";
 import { OrderDTO, OrderExample } from "./order.dto";
 import { OrderService } from "./order.service";
@@ -46,5 +48,27 @@ export class OrderController extends Controller {
   @Get("/{orderId}")
   async getOrder(@Path("orderId") orderId: string) {
     return this.orderService.findOrder(orderId);
+  }
+
+  @SuccessResponse(200, "Pedido deletado")
+  @Response(404, "Pedido não encontrado")
+  @Delete("/{orderId}")
+  async deleteOrder(@Path("orderId") orderId: string) {
+    return this.orderService.deleteOrder(orderId);
+  }
+
+  @SuccessResponse(200, "Pedido editado com sucesso")
+  @Response<OrderDTO.Order>(
+    200,
+    "Pedido editado com sucesso",
+    OrderExample.Order,
+  )
+  @Response(404, "Pedido não encontrado")
+  @Put("/{orderId}")
+  async updateOrder(
+    @Path("orderId") orderId: string,
+    @Body() body: OrderDTO.UpdateOrder,
+  ) {
+    return this.orderService.updateOrder({ body, id: orderId });
   }
 }

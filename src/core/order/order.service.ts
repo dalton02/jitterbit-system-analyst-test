@@ -50,6 +50,62 @@ export class OrderService {
     return await orderRepository.findOrderById(body.numeroPedido);
   }
 
+  async updateOrder(params: { body: OrderDTO.UpdateOrder; id: string }) {
+    const { body, id } = params;
+
+    const orderRepository = new OrderRepository();
+    const existingOrder = await orderRepository.findOrderById(id);
+
+    if (!existingOrder) {
+      throw new NotFoundError("Pedido não encontrado");
+    }
+
+    const items = existingOrder.items;
+
+    const existingIds = new Set(items.map((item) => item.productId));
+    const bodyIds = new Set(body.items.map((item) => item.idItem));
+
+    const toCreateItems = body.items.filter(
+      (item) => !existingIds.has(item.idItem),
+    );
+
+    const toUpdateItems = body.items.filter((item) =>
+      existingIds.has(item.idItem),
+    );
+
+    const toDeleteItems = items.filter((item) => !bodyIds.has(item.productId));
+
+    await db.transaction(async (tx) => {
+      const orderTransaction = new OrderRepository(tx);
+      await orderTransaction.updateOrder({
+        creationDate: new Date(body.dataCriacao),
+        orderId: id,
+        value: body.valorTotal,
+      });
+
+      await Promise.all([
+        toCreateItems.map(async (item) => {
+          await orderTransaction.createItem({
+            orderId: id,
+            price: item.valorItem,
+            productId: item.idItem,
+            quantity: item.quantidadeItem,
+          });
+        }),
+        toUpdateItems.map(async (item) => {
+          await orderTransaction.updateItem({
+            price: item.valorItem,
+            productId: item.idItem,
+            quantity: item.quantidadeItem,
+          });
+        }),
+        toDeleteItems.map(async (item) => {
+          await orderTransaction.deleteItem(item.productId);
+        }),
+      ]);
+    });
+    return await orderRepository.findOrderById(id);
+  }
   async findOrder(id: string): Promise<OrderDTO.Order> {
     const orderRepository = new OrderRepository();
     const order = await orderRepository.findOrderById(id);
@@ -65,5 +121,15 @@ export class OrderService {
   }): Promise<OrderDTO.ListOrders> {
     const orderRepository = new OrderRepository();
     return await orderRepository.listOrders(params);
+  }
+
+  async deleteOrder(id: string) {
+    const orderRepository = new OrderRepository();
+    const order = await orderRepository.findOrderById(id);
+    if (!order) {
+      throw new NotFoundError("Pedido não encontrado");
+    }
+    await orderRepository.deleteOrder(id);
+    return {};
   }
 }

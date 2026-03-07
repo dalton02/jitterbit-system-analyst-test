@@ -31,6 +31,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     const transformedBody = {
       statusCode: res.statusCode,
       data: body,
+      message: "Operação realizada com sucesso",
     };
     return originalJson.call(this, transformedBody);
   };
@@ -43,14 +44,17 @@ RegisterRoutes(app);
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.locals.skipResponseTransform = true;
 
+  console.log(err);
   if (err instanceof HttpError) {
     return res.status(err.status).json({
+      statusCode: err.status,
       message: err.message,
       data: null,
     });
   }
 
   return res.status(500).json({
+    statusCode: 500,
     message: "Internal server error",
     data: null,
   });
