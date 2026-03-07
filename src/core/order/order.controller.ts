@@ -10,11 +10,13 @@ import {
   Query,
   Delete,
   Put,
+  Security,
 } from "tsoa";
 import { OrderDTO, OrderExample } from "./order.dto";
 import { OrderService } from "./order.service";
 
 @Route("order")
+@Security("jwt")
 export class OrderController extends Controller {
   private orderService = new OrderService();
 
